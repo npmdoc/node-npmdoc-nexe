@@ -1,0 +1,341 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/jaredallard/nexe#readme"
+
+    >nexe (v1.1.2)</a>
+</h1>
+<h4>create single executables out of your [node/io].js applications</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.nexe">module nexe</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.nexe.compile">
+            function <span class="apidocSignatureSpan">nexe.</span>compile
+            <span class="apidocSignatureSpan">(options, complete)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.nexe.package">
+            function <span class="apidocSignatureSpan">nexe.</span>package
+            <span class="apidocSignatureSpan">(path, options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.nexe" id="apidoc.module.nexe">module nexe</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.nexe.compile" id="apidoc.element.nexe.compile">
+        function <span class="apidocSignatureSpan">nexe.</span>compile
+        <span class="apidocSignatureSpan">(options, complete)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">compile = function (options, complete) {
+
+  var nodeCompiler, nexeEntryPath;
+
+  async.waterfall([
+<span class="apidocCodeCommentSpan">    /**
+     *check relevant options
+     */
+</span>    function checkOpts(next) {
+      /* failsafe */
+      if (options === undefined) {
+        _log(&#x22;error&#x22;, &#x22;no options given to .compile()&#x22;);
+        process.exit()
+      }
+
+      /**
+       * Have we been given a custom flag for python executable?
+       **/
+      if (options.python !== &#x27;python&#x27; &#x26;&#x26; options.python !== &#x22;&#x22; &#x26;&#x26; options.python !== undefined) {
+        if (isWin) {
+          isPy = options.python.replace(/\//gm, &#x22;\\&#x22;); // use windows file paths, batch is sensitive.
+        } else {
+          isPy = options.python;
+        }
+
+        _log(&#x22;set python as &#x22; + isPy);
+      } else {
+        isPy = &#x22;python&#x22;;
+      }
+
+      // remove dots
+      options.framework = options.framework.replace(/\./g, &#x22;&#x22;);
+
+      // set outter-scope framework variable.
+      framework = options.framework;
+      _log(&#x22;framework =&#x3e; &#x22; + framework);
+
+      version = options.nodeVersion; // better framework vc
+
+      // check iojs version
+      if (framework === &#x22;iojs&#x22; &#x26;&#x26; version === &#x22;latest&#x22;) {
+        _log(&#x22;fetching iojs versions&#x22;);
+        mkdirp(options.nodeTempDir); // make temp dir, probably repetive.
+
+        // create write stream so we have control over events
+        var output = fs.createWriteStream(path.join(options.nodeTempDir,
+          &#x22;iojs-versions.json&#x22;));
+
+        request.get(&#x22;https://iojs.org/dist/index.json&#x22;)
+          .pipe(output);
+
+        output.on(&#x27;close&#x27;, function() {
+          _log(&#x22;done&#x22;);
+          var f = fs.readFileSync(path.join(options.nodeTempDir,
+            &#x22;iojs-versions.json&#x22;));
+          f = JSON.parse(f);
+          version = f[0].version.replace(&#x22;v&#x22;, &#x22;&#x22;);
+
+          _log(&#x22;iojs latest =&#x3e; &#x22; + version);
+
+          // continue down along the async road
+          next();
+        });
+      } else {
+        next();
+      }
+    },
+
+    /**
+     * first download node
+     */
+    function downloadNode(next) {
+      _downloadNode(version, options.nodeTempDir, options.nodeConfigureArgs, options.nodeMakeArgs, next);
+    },
+
+    /**
+     * Embed Resources into a base64 encoded array.
+     **/
+    function embedResources(nc, next) {
+      nodeCompiler = nc;
+
+      _log(&#x22;embedResources %s&#x22;, options.resourceFiles);
+      embed(options.resourceFiles, options.resourceRoot, nc, next);
+    },
+
+    /**
+     * Write nexeres.js
+     **/
+    function writeResources(resources, next) {
+      let resourcePath = path.join(nodeCompiler.dir, &#x22;lib&#x22;, &#x22;nexeres.js&#x22;);
+      _log(&#x22;resource -&#x3e; %s&#x22;, resourcePath);
+
+      fs.writeFile(resourcePath, resources, next);
+    },
+
+    /**
+     * Bundle the application into one script
+     **/
+    function combineProject(next) {
+      _log(&#x22;bundle %s&#x22;, options.input);
+      bundle(options.input, nodeCompiler.dir, options, next);
+    },
+
+    /**
+     * monkeypatch some files so that the nexe.js file is loaded when the app runs
+     */
+
+    function monkeyPatchNodeConfig(next) {
+      _monkeyPatchNodeConfig(nodeCompiler, next);
+    },
+
+    /**
+     * monkeypatch node.cc to prevent v8 and node from processing CLI flags
+     */
+    function monkeyPatchNodeCc(next) {
+      if (options.flags) {
+        _monkeyPatchMainCc(nodeCompiler, next);
+      } else {
+        next();
+      }
+    },
+
+    function monkeyPatchv8FlagsCc(next) {
+      if (options.jsFlags) {
+        return _monkeyPatchv8FlagsCc(nodeCompiler, options, next);
+      }
+
+      return next();
+    },
+
+    /**
+     * monkeypatch child_process.js so nexejs knows when it is a forked process
+     */
+    function monkeyPatchChildProc(next) {
+      _monkeyPatchChildProcess(nodeCompiler, next);
+    },
+
+    /**
+     * If an old compiled executable exists in the Release directory, delete it.
+     * This lets us see if the build failed by checking the existence of this file later.
+     */
+
+    function cleanUpOldExecutable(next) {
+      fs.unlink(nodeCompiler.releasePath, function(err) {
+        if (err) {
+          if (err.code === &#x22;ENOENT&#x22;) {
+            next();
+          } else {
+            throw err;
+          } ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+### Code Usage
+
+```javascript
+
+var nexe = require(&#x27;nexe&#x27;);
+
+nexe.<span class="apidocCodeKeywordSpan">compile</span>({
+	input: &#x27;input.js&#x27;, // where the input file is
+	output: &#x27;path/to/bin&#x27;, // where to output the compiled binary
+	nodeVersion: &#x27;5.5.0&#x27;, // node version
+	nodeTempDir: &#x27;src&#x27;, // where to store node source.
+	nodeConfigureArgs: [&#x27;opt&#x27;, &#x27;val&#x27;], // for all your configure arg needs.
+	nodeMakeArgs: [&#x22;-j&#x22;, &#x22;4&#x22;], // when you want to control the make process.
+	python: &#x27;path/to/python&#x27;, // for non-standard python setups. Or python 3.x forced ones.
+...</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.nexe.package" id="apidoc.element.nexe.package">
+        function <span class="apidocSignatureSpan">nexe.</span>package
+        <span class="apidocSignatureSpan">(path, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">package = function (path, options) {
+  let _package; // scope
+
+  // check if the file exists
+  if (fs.existsSync(path) === false) {
+    _log(&#x22;warn&#x22;, &#x22;no package.json found.&#x22;);
+  } else {
+    _package = require(path);
+  }
+
+  if(!_package || !_package.nexe) {
+    _log(&#x27;error&#x27;, &#x27;trying to use package.json variables, but not setup to do so!&#x27;);
+    process.exit(1);
+  }
+
+  // replace ^$ w/ os specific extension on output
+  if (isWin) {
+    _package.nexe.output = _package.nexe.output.replace(/\^\$/, &#x27;.exe&#x27;) // exe
+  } else {
+    _package.nexe.output = _package.nexe.output.replace(/\^\$/, &#x27;&#x27;) // none
+  }
+
+  // construct the object
+  let obj = {
+    input: (_package.nexe.input || options.i),
+    output: (_package.nexe.output || options.o),
+    flags: (_package.nexe.runtime.ignoreFlags || (options.f || false)),
+    nodeMakeArgs: (_package.nexe.runtime.nodeMakeArgs || []),
+    resourceFiles: (_package.nexe.resourceFiles),
+    nodeVersion: (_package.nexe.runtime.version || options.r),
+    nodeConfigureArgs: (_package.nexe.runtime.nodeConfigureArgs || []),
+    nodeMakeArgs: (_package.nexe.runtime.nodeMakeArgs || []),
+    jsFlags: (_package.nexe.runtime[&#x27;js-flags&#x27;] || options.j),
+    python: (_package.nexe.python || options.p),
+    debug: (_package.nexe.debug || options.d),
+    nodeTempDir: (_package.nexe.temp || options.t),
+    framework: (_package.nexe.runtime.framework || options.f)
+  }
+
+  // browserify options
+  if(_package.nexe.browserify !== undefined) {
+    obj.browserifyRequires = (_package.nexe.browserify.requires || []);
+    obj.browserifyExcludes = (_package.nexe.browserify.excludes || []);
+    obj.browserifyPaths    = (_package.nexe.browserify.paths    || []);
+  }
+
+  // TODO: get rid of this crappy code I wrote and make it less painful to read.
+  Object.keys(_package.nexe).forEach(function(v, i) {
+    if (v !== &#x22;runtime&#x22; &#x26;&#x26; v !== &#x27;browserify&#x27;) {
+      _log(&#x22;log&#x22;, v + &#x22; =&#x3e; &#x27;&#x22; + _package.nexe[v] + &#x22;&#x27;&#x22;);
+    }
+  });
+
+  return obj;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
