@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/jaredallard/nexe#readme"
-
-    >nexe (v1.1.2)</a>
+    <a href="https://github.com/jaredallard/nexe#readme">nexe (v1.1.2)</a>
 </h1>
 <h4>create single executables out of your [node/io].js applications</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.nexe">module nexe</a><ol>
 
@@ -187,14 +180,14 @@
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function bundle(input, nc, options, complete) {
-  const bundlePath = path.join(nc, &#x22;lib&#x22;, &#x22;nexe.js&#x22;);
-  const mapfile    = options.output+&#x27;.map&#x27;;
+  const bundlePath = path.join(nc, "lib", "nexe.js");
+  const mapfile    = options.output+'.map';
   let ws           = fs.createWriteStream(bundlePath);
 
 
-  const igv = &#x27;__filename,__dirname,_process&#x27;;
+  const igv = '__filename,__dirname,_process';
   let insertGlobalVars = {},
-      wantedGlobalVars = igv.split(&#x27;,&#x27;);
+      wantedGlobalVars = igv.split(',');
 
   // parse insertGlobalVars.
   Object.keys(insertGlobals.vars).forEach(function (x) {
@@ -203,14 +196,14 @@
     }
   });
 
-  let paths = [path.join(nc, &#x27;lib&#x27;)];
+  let paths = [path.join(nc, 'lib')];
 
   if(options.browserifyPaths) {
     paths = paths.concat(options.browserifyPaths);
   }
 
 
-  _log(&#x27;executing browserify via API&#x27;);
+  _log('executing browserify via API');
   let bproc = browserify([input], {
     debug: options.debug,
     commondir: false,
@@ -221,51 +214,51 @@
     browserField: false
   });
 
-  if (options.browserifyExcludes &#x26;&#x26; Array.isArray(options.browserifyExcludes)) {
-    for (let i = 0; i &#x3c; options.browserifyExcludes.length; i++) {
+  if (options.browserifyExcludes &amp;&amp; Array.isArray(options.browserifyExcludes)) {
+    for (let i = 0; i &lt; options.browserifyExcludes.length; i++) {
       let lib = options.browserifyExcludes[i];
-      _log(&#x27;Excluding \&#x27;%s\&#x27; from browserify bundle&#x27;, lib);
+      _log('Excluding \'%s\' from browserify bundle', lib);
       bproc.exclude(lib);
     }
   }
 
   // copy the excludes code for requires for now.
-  if (options.browserifyRequires &#x26;&#x26; Array.isArray(options.browserifyRequires)) {
-    for (let i = 0; i &#x3c; options.browserifyRequires.length; i++) {
+  if (options.browserifyRequires &amp;&amp; Array.isArray(options.browserifyRequires)) {
+    for (let i = 0; i &lt; options.browserifyRequires.length; i++) {
       let lib = options.browserifyRequires[i];
       let name = lib.file || lib; // for  object format.
 
-      _log(&#x27;Force including \&#x27;%s\&#x27; in browserify bundle&#x27;, name);
+      _log('Force including \'%s\' in browserify bundle', name);
       bproc.require(lib);
     }
   }
 
   if(options.debug) {
-    bproc.require(require.resolve(&#x27;source-map-support&#x27;))
+    bproc.require(require.resolve('source-map-support'))
   }
 
   let bprocbun = bproc.bundle() // bundle
       .pipe(ws) // pipe to file
 
-  // error on require errors, still can&#x27;t contionue. ffs browserify
-  bprocbun.on(&#x27;error&#x27;, function(err) {
-    _log(&#x27;error&#x27;, &#x27;[browserify] &#x27;+err);
+  // error on require errors, still can't contionue. ffs browserify
+  bprocbun.on('error', function(err) {
+    _log('error', '[browserify] '+err);
   });
 
-  ws.on(&#x27;error&#x27;, function(err) {
+  ws.on('error', function(err) {
     console.log(err);
-    _log(&#x27;error&#x27;, &#x27;Failed to save stdout to disk&#x27;);
+    _log('error', 'Failed to save stdout to disk');
     process.exit(1);
   })
 
-  ws.on(&#x27;close&#x27;, function() {
-    var source = fs.readFileSync(bundlePath, &#x27;utf8&#x27;);
-    source = source.replace(/[^\x00-\x7F]/g, &#x22;&#x22;);
+  ws.on('close', function() {
+    var source = fs.readFileSync(bundlePath, 'utf8');
+    source = source.replace(/[^\x00-\x7F]/g, "");
 
     // write the source modified to nexe.js
-    fs.writeFile(bundlePath, source, &#x27;utf8&#x27;, function(err) {
+    fs.writeFile(bundlePath, source, 'utf8', function(err) {
       if (err) {
-        _log(&#x27;error&#x27;, &#x27;failed to save source&#x27;);
+        _log('error', 'failed to save source');
         process.exit(1);
       }
 
@@ -278,15 +271,15 @@
 }
 
 if(options.debug) {
-  bproc.require(require.resolve(&#x27;source-map-support&#x27;))
+  bproc.require(require.resolve('source-map-support'))
 }
 
 let bprocbun = bproc.<span class="apidocCodeKeywordSpan">bundle</span>() // bundle
     .pipe(ws) // pipe to file
 
-// error on require errors, still can&#x27;t contionue. ffs browserify
-bprocbun.on(&#x27;error&#x27;, function(err) {
-  _log(&#x27;error&#x27;, &#x27;[browserify] &#x27;+err);
+// error on require errors, still can't contionue. ffs browserify
+bprocbun.on('error', function(err) {
+  _log('error', '[browserify] '+err);
 });
 ...</pre></li>
     </ul>
@@ -311,54 +304,54 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
 </span>    function checkOpts(next) {
       /* failsafe */
       if (options === undefined) {
-        _log(&#x22;error&#x22;, &#x22;no options given to .compile()&#x22;);
+        _log("error", "no options given to .compile()");
         process.exit()
       }
 
       /**
        * Have we been given a custom flag for python executable?
        **/
-      if (options.python !== &#x27;python&#x27; &#x26;&#x26; options.python !== &#x22;&#x22; &#x26;&#x26; options.python !== undefined) {
+      if (options.python !== 'python' &amp;&amp; options.python !== "" &amp;&amp; options.python !== undefined) {
         if (isWin) {
-          isPy = options.python.replace(/\//gm, &#x22;\\&#x22;); // use windows file paths, batch is sensitive.
+          isPy = options.python.replace(/\//gm, "\\"); // use windows file paths, batch is sensitive.
         } else {
           isPy = options.python;
         }
 
-        _log(&#x22;set python as &#x22; + isPy);
+        _log("set python as " + isPy);
       } else {
-        isPy = &#x22;python&#x22;;
+        isPy = "python";
       }
 
       // remove dots
-      options.framework = options.framework.replace(/\./g, &#x22;&#x22;);
+      options.framework = options.framework.replace(/\./g, "");
 
       // set outter-scope framework variable.
       framework = options.framework;
-      _log(&#x22;framework =&#x3e; &#x22; + framework);
+      _log("framework =&gt; " + framework);
 
       version = options.nodeVersion; // better framework vc
 
       // check iojs version
-      if (framework === &#x22;iojs&#x22; &#x26;&#x26; version === &#x22;latest&#x22;) {
-        _log(&#x22;fetching iojs versions&#x22;);
+      if (framework === "iojs" &amp;&amp; version === "latest") {
+        _log("fetching iojs versions");
         mkdirp(options.nodeTempDir); // make temp dir, probably repetive.
 
         // create write stream so we have control over events
         var output = fs.createWriteStream(path.join(options.nodeTempDir,
-          &#x22;iojs-versions.json&#x22;));
+          "iojs-versions.json"));
 
-        request.get(&#x22;https://iojs.org/dist/index.json&#x22;)
+        request.get("https://iojs.org/dist/index.json")
           .pipe(output);
 
-        output.on(&#x27;close&#x27;, function() {
-          _log(&#x22;done&#x22;);
+        output.on('close', function() {
+          _log("done");
           var f = fs.readFileSync(path.join(options.nodeTempDir,
-            &#x22;iojs-versions.json&#x22;));
+            "iojs-versions.json"));
           f = JSON.parse(f);
-          version = f[0].version.replace(&#x22;v&#x22;, &#x22;&#x22;);
+          version = f[0].version.replace("v", "");
 
-          _log(&#x22;iojs latest =&#x3e; &#x22; + version);
+          _log("iojs latest =&gt; " + version);
 
           // continue down along the async road
           next();
@@ -381,7 +374,7 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
     function embedResources(nc, next) {
       nodeCompiler = nc;
 
-      _log(&#x22;embedResources %s&#x22;, options.resourceFiles);
+      _log("embedResources %s", options.resourceFiles);
       embed(options.resourceFiles, options.resourceRoot, nc, next);
     },
 
@@ -389,8 +382,8 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
      * Write nexeres.js
      **/
     function writeResources(resources, next) {
-      let resourcePath = path.join(nodeCompiler.dir, &#x22;lib&#x22;, &#x22;nexeres.js&#x22;);
-      _log(&#x22;resource -&#x3e; %s&#x22;, resourcePath);
+      let resourcePath = path.join(nodeCompiler.dir, "lib", "nexeres.js");
+      _log("resource -&gt; %s", resourcePath);
 
       fs.writeFile(resourcePath, resources, next);
     },
@@ -399,7 +392,7 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
      * Bundle the application into one script
      **/
     function combineProject(next) {
-      _log(&#x22;bundle %s&#x22;, options.input);
+      _log("bundle %s", options.input);
       bundle(options.input, nodeCompiler.dir, options, next);
     },
 
@@ -445,7 +438,7 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
     function cleanUpOldExecutable(next) {
       fs.unlink(nodeCompiler.releasePath, function(err) {
         if (err) {
-          if (err.code === &#x22;ENOENT&#x22;) {
+          if (err.code === "ENOENT") {
             next();
           } else {
             throw err;
@@ -456,16 +449,16 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
 
 ```javascript
 
-var nexe = require(&#x27;nexe&#x27;);
+var nexe = require('nexe');
 
 nexe.<span class="apidocCodeKeywordSpan">compile</span>({
-	input: &#x27;input.js&#x27;, // where the input file is
-	output: &#x27;path/to/bin&#x27;, // where to output the compiled binary
-	nodeVersion: &#x27;5.5.0&#x27;, // node version
-	nodeTempDir: &#x27;src&#x27;, // where to store node source.
-	nodeConfigureArgs: [&#x27;opt&#x27;, &#x27;val&#x27;], // for all your configure arg needs.
-	nodeMakeArgs: [&#x22;-j&#x22;, &#x22;4&#x22;], // when you want to control the make process.
-	python: &#x27;path/to/python&#x27;, // for non-standard python setups. Or python 3.x forced ones.
+	input: 'input.js', // where the input file is
+	output: 'path/to/bin', // where to output the compiled binary
+	nodeVersion: '5.5.0', // node version
+	nodeTempDir: 'src', // where to store node source.
+	nodeConfigureArgs: ['opt', 'val'], // for all your configure arg needs.
+	nodeMakeArgs: ["-j", "4"], // when you want to control the make process.
+	python: 'path/to/python', // for non-standard python setups. Or python 3.x forced ones.
 ...</pre></li>
     </ul>
 
@@ -480,23 +473,23 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function embed(resourceFiles, resourceRoot, options, complete) {
   const encode = function(filePath) {
-    return fs.readFileSync(filePath).toString(&#x27;base64&#x27;);
+    return fs.readFileSync(filePath).toString('base64');
   }
 
   resourceFiles = resourceFiles || [];
-  resourceRoot = resourceRoot || &#x22;&#x22;;
+  resourceRoot = resourceRoot || "";
 
   if (!Array.isArray(resourceFiles)) {
-    throw new Error(&#x22;Bad Argument: resourceFiles is not an array&#x22;);
+    throw new Error("Bad Argument: resourceFiles is not an array");
   }
 
-  let buffer = &#x22;var embeddedFiles = {\n&#x22;;
-  for (let i = 0; i &#x3c; resourceFiles.length; ++i) {
-    buffer += JSON.stringify(path.relative(resourceRoot, resourceFiles[i])) + &#x27;: &#x22;&#x27;;
-    buffer += encode(resourceFiles[i]) + &#x27;&#x22;,\n&#x27;;
+  let buffer = "var embeddedFiles = {\n";
+  for (let i = 0; i &lt; resourceFiles.length; ++i) {
+    buffer += JSON.stringify(path.relative(resourceRoot, resourceFiles[i])) + ': "';
+    buffer += encode(resourceFiles[i]) + '",\n';
   }
 
-  buffer += &#x22;\n};\n\nmodule.exports.keys = function () { return Object.keys(embeddedFiles); }\n\nmodule.exports.get = &#x22;;
+  buffer += "\n};\n\nmodule.exports.keys = function () { return Object.keys(embeddedFiles); }\n\nmodule.exports.get = ";
   buffer += accessor.toString();
   complete(null, buffer);
 }</pre></li>
@@ -517,7 +510,7 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
   async.waterfall([
 
     function read (next) {
-      fs.readFile(filePath, &#x22;utf8&#x22;, next);
+      fs.readFile(filePath, "utf8", next);
     },
 
     // TODO - need to parse gyp file - this is a bit hacker
@@ -525,12 +518,12 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
 
       if (monkeyPatched(content)) return complete();
 
-      _log(&#x22;monkey patch %s&#x22;, filePath);
+      _log("monkey patch %s", filePath);
       processor(content, next);
     },
 
     function write (content, next) {
-      fs.writeFile(filePath, content, &#x22;utf8&#x22;, next);
+      fs.writeFile(filePath, content, "utf8", next);
     }
   ], complete);
 }</pre></li>
@@ -551,21 +544,21 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
 
   // check if the file exists
   if (fs.existsSync(path) === false) {
-    _log(&#x22;warn&#x22;, &#x22;no package.json found.&#x22;);
+    _log("warn", "no package.json found.");
   } else {
     _package = require(path);
   }
 
   if(!_package || !_package.nexe) {
-    _log(&#x27;error&#x27;, &#x27;trying to use package.json variables, but not setup to do so!&#x27;);
+    _log('error', 'trying to use package.json variables, but not setup to do so!');
     process.exit(1);
   }
 
   // replace ^$ w/ os specific extension on output
   if (isWin) {
-    _package.nexe.output = _package.nexe.output.replace(/\^\$/, &#x27;.exe&#x27;) // exe
+    _package.nexe.output = _package.nexe.output.replace(/\^\$/, '.exe') // exe
   } else {
-    _package.nexe.output = _package.nexe.output.replace(/\^\$/, &#x27;&#x27;) // none
+    _package.nexe.output = _package.nexe.output.replace(/\^\$/, '') // none
   }
 
   // construct the object
@@ -578,7 +571,7 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     nodeVersion: (_package.nexe.runtime.version || options.r),
     nodeConfigureArgs: (_package.nexe.runtime.nodeConfigureArgs || []),
     nodeMakeArgs: (_package.nexe.runtime.nodeMakeArgs || []),
-    jsFlags: (_package.nexe.runtime[&#x27;js-flags&#x27;] || options.j),
+    jsFlags: (_package.nexe.runtime['js-flags'] || options.j),
     python: (_package.nexe.python || options.p),
     debug: (_package.nexe.debug || options.d),
     nodeTempDir: (_package.nexe.temp || options.t),
@@ -594,8 +587,8 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
 
   // TODO: get rid of this crappy code I wrote and make it less painful to read.
   Object.keys(_package.nexe).forEach(function(v, i) {
-    if (v !== &#x22;runtime&#x22; &#x26;&#x26; v !== &#x27;browserify&#x27;) {
-      _log(&#x22;log&#x22;, v + &#x22; =&#x3e; &#x27;&#x22; + _package.nexe[v] + &#x22;&#x27;&#x22;);
+    if (v !== "runtime" &amp;&amp; v !== 'browserify') {
+      _log("log", v + " =&gt; '" + _package.nexe[v] + "'");
     }
   });
 
@@ -619,14 +612,14 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     </h2>
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function bundle(input, nc, options, complete) {
-  const bundlePath = path.join(nc, &#x22;lib&#x22;, &#x22;nexe.js&#x22;);
-  const mapfile    = options.output+&#x27;.map&#x27;;
+  const bundlePath = path.join(nc, "lib", "nexe.js");
+  const mapfile    = options.output+'.map';
   let ws           = fs.createWriteStream(bundlePath);
 
 
-  const igv = &#x27;__filename,__dirname,_process&#x27;;
+  const igv = '__filename,__dirname,_process';
   let insertGlobalVars = {},
-      wantedGlobalVars = igv.split(&#x27;,&#x27;);
+      wantedGlobalVars = igv.split(',');
 
   // parse insertGlobalVars.
   Object.keys(insertGlobals.vars).forEach(function (x) {
@@ -635,14 +628,14 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     }
   });
 
-  let paths = [path.join(nc, &#x27;lib&#x27;)];
+  let paths = [path.join(nc, 'lib')];
 
   if(options.browserifyPaths) {
     paths = paths.concat(options.browserifyPaths);
   }
 
 
-  _log(&#x27;executing browserify via API&#x27;);
+  _log('executing browserify via API');
   let bproc = browserify([input], {
     debug: options.debug,
     commondir: false,
@@ -653,51 +646,51 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     browserField: false
   });
 
-  if (options.browserifyExcludes &#x26;&#x26; Array.isArray(options.browserifyExcludes)) {
-    for (let i = 0; i &#x3c; options.browserifyExcludes.length; i++) {
+  if (options.browserifyExcludes &amp;&amp; Array.isArray(options.browserifyExcludes)) {
+    for (let i = 0; i &lt; options.browserifyExcludes.length; i++) {
       let lib = options.browserifyExcludes[i];
-      _log(&#x27;Excluding \&#x27;%s\&#x27; from browserify bundle&#x27;, lib);
+      _log('Excluding \'%s\' from browserify bundle', lib);
       bproc.exclude(lib);
     }
   }
 
   // copy the excludes code for requires for now.
-  if (options.browserifyRequires &#x26;&#x26; Array.isArray(options.browserifyRequires)) {
-    for (let i = 0; i &#x3c; options.browserifyRequires.length; i++) {
+  if (options.browserifyRequires &amp;&amp; Array.isArray(options.browserifyRequires)) {
+    for (let i = 0; i &lt; options.browserifyRequires.length; i++) {
       let lib = options.browserifyRequires[i];
       let name = lib.file || lib; // for  object format.
 
-      _log(&#x27;Force including \&#x27;%s\&#x27; in browserify bundle&#x27;, name);
+      _log('Force including \'%s\' in browserify bundle', name);
       bproc.require(lib);
     }
   }
 
   if(options.debug) {
-    bproc.require(require.resolve(&#x27;source-map-support&#x27;))
+    bproc.require(require.resolve('source-map-support'))
   }
 
   let bprocbun = bproc.bundle() // bundle
       .pipe(ws) // pipe to file
 
-  // error on require errors, still can&#x27;t contionue. ffs browserify
-  bprocbun.on(&#x27;error&#x27;, function(err) {
-    _log(&#x27;error&#x27;, &#x27;[browserify] &#x27;+err);
+  // error on require errors, still can't contionue. ffs browserify
+  bprocbun.on('error', function(err) {
+    _log('error', '[browserify] '+err);
   });
 
-  ws.on(&#x27;error&#x27;, function(err) {
+  ws.on('error', function(err) {
     console.log(err);
-    _log(&#x27;error&#x27;, &#x27;Failed to save stdout to disk&#x27;);
+    _log('error', 'Failed to save stdout to disk');
     process.exit(1);
   })
 
-  ws.on(&#x27;close&#x27;, function() {
-    var source = fs.readFileSync(bundlePath, &#x27;utf8&#x27;);
-    source = source.replace(/[^\x00-\x7F]/g, &#x22;&#x22;);
+  ws.on('close', function() {
+    var source = fs.readFileSync(bundlePath, 'utf8');
+    source = source.replace(/[^\x00-\x7F]/g, "");
 
     // write the source modified to nexe.js
-    fs.writeFile(bundlePath, source, &#x27;utf8&#x27;, function(err) {
+    fs.writeFile(bundlePath, source, 'utf8', function(err) {
       if (err) {
-        _log(&#x27;error&#x27;, &#x27;failed to save source&#x27;);
+        _log('error', 'failed to save source');
         process.exit(1);
       }
 
@@ -710,15 +703,15 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
 }
 
 if(options.debug) {
-  bproc.require(require.resolve(&#x27;source-map-support&#x27;))
+  bproc.require(require.resolve('source-map-support'))
 }
 
 let bprocbun = bproc.<span class="apidocCodeKeywordSpan">bundle</span>() // bundle
     .pipe(ws) // pipe to file
 
-// error on require errors, still can&#x27;t contionue. ffs browserify
-bprocbun.on(&#x27;error&#x27;, function(err) {
-  _log(&#x27;error&#x27;, &#x27;[browserify] &#x27;+err);
+// error on require errors, still can't contionue. ffs browserify
+bprocbun.on('error', function(err) {
+  _log('error', '[browserify] '+err);
 });
 ...</pre></li>
     </ul>
@@ -748,54 +741,54 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
 </span>    function checkOpts(next) {
       /* failsafe */
       if (options === undefined) {
-        _log(&#x22;error&#x22;, &#x22;no options given to .compile()&#x22;);
+        _log("error", "no options given to .compile()");
         process.exit()
       }
 
       /**
        * Have we been given a custom flag for python executable?
        **/
-      if (options.python !== &#x27;python&#x27; &#x26;&#x26; options.python !== &#x22;&#x22; &#x26;&#x26; options.python !== undefined) {
+      if (options.python !== 'python' &amp;&amp; options.python !== "" &amp;&amp; options.python !== undefined) {
         if (isWin) {
-          isPy = options.python.replace(/\//gm, &#x22;\\&#x22;); // use windows file paths, batch is sensitive.
+          isPy = options.python.replace(/\//gm, "\\"); // use windows file paths, batch is sensitive.
         } else {
           isPy = options.python;
         }
 
-        _log(&#x22;set python as &#x22; + isPy);
+        _log("set python as " + isPy);
       } else {
-        isPy = &#x22;python&#x22;;
+        isPy = "python";
       }
 
       // remove dots
-      options.framework = options.framework.replace(/\./g, &#x22;&#x22;);
+      options.framework = options.framework.replace(/\./g, "");
 
       // set outter-scope framework variable.
       framework = options.framework;
-      _log(&#x22;framework =&#x3e; &#x22; + framework);
+      _log("framework =&gt; " + framework);
 
       version = options.nodeVersion; // better framework vc
 
       // check iojs version
-      if (framework === &#x22;iojs&#x22; &#x26;&#x26; version === &#x22;latest&#x22;) {
-        _log(&#x22;fetching iojs versions&#x22;);
+      if (framework === "iojs" &amp;&amp; version === "latest") {
+        _log("fetching iojs versions");
         mkdirp(options.nodeTempDir); // make temp dir, probably repetive.
 
         // create write stream so we have control over events
         var output = fs.createWriteStream(path.join(options.nodeTempDir,
-          &#x22;iojs-versions.json&#x22;));
+          "iojs-versions.json"));
 
-        request.get(&#x22;https://iojs.org/dist/index.json&#x22;)
+        request.get("https://iojs.org/dist/index.json")
           .pipe(output);
 
-        output.on(&#x27;close&#x27;, function() {
-          _log(&#x22;done&#x22;);
+        output.on('close', function() {
+          _log("done");
           var f = fs.readFileSync(path.join(options.nodeTempDir,
-            &#x22;iojs-versions.json&#x22;));
+            "iojs-versions.json"));
           f = JSON.parse(f);
-          version = f[0].version.replace(&#x22;v&#x22;, &#x22;&#x22;);
+          version = f[0].version.replace("v", "");
 
-          _log(&#x22;iojs latest =&#x3e; &#x22; + version);
+          _log("iojs latest =&gt; " + version);
 
           // continue down along the async road
           next();
@@ -818,7 +811,7 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
     function embedResources(nc, next) {
       nodeCompiler = nc;
 
-      _log(&#x22;embedResources %s&#x22;, options.resourceFiles);
+      _log("embedResources %s", options.resourceFiles);
       embed(options.resourceFiles, options.resourceRoot, nc, next);
     },
 
@@ -826,8 +819,8 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
      * Write nexeres.js
      **/
     function writeResources(resources, next) {
-      let resourcePath = path.join(nodeCompiler.dir, &#x22;lib&#x22;, &#x22;nexeres.js&#x22;);
-      _log(&#x22;resource -&#x3e; %s&#x22;, resourcePath);
+      let resourcePath = path.join(nodeCompiler.dir, "lib", "nexeres.js");
+      _log("resource -&gt; %s", resourcePath);
 
       fs.writeFile(resourcePath, resources, next);
     },
@@ -836,7 +829,7 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
      * Bundle the application into one script
      **/
     function combineProject(next) {
-      _log(&#x22;bundle %s&#x22;, options.input);
+      _log("bundle %s", options.input);
       bundle(options.input, nodeCompiler.dir, options, next);
     },
 
@@ -882,7 +875,7 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
     function cleanUpOldExecutable(next) {
       fs.unlink(nodeCompiler.releasePath, function(err) {
         if (err) {
-          if (err.code === &#x22;ENOENT&#x22;) {
+          if (err.code === "ENOENT") {
             next();
           } else {
             throw err;
@@ -893,16 +886,16 @@ bprocbun.on(&#x27;error&#x27;, function(err) {
 
 ```javascript
 
-var nexe = require(&#x27;nexe&#x27;);
+var nexe = require('nexe');
 
 nexe.<span class="apidocCodeKeywordSpan">compile</span>({
-	input: &#x27;input.js&#x27;, // where the input file is
-	output: &#x27;path/to/bin&#x27;, // where to output the compiled binary
-	nodeVersion: &#x27;5.5.0&#x27;, // node version
-	nodeTempDir: &#x27;src&#x27;, // where to store node source.
-	nodeConfigureArgs: [&#x27;opt&#x27;, &#x27;val&#x27;], // for all your configure arg needs.
-	nodeMakeArgs: [&#x22;-j&#x22;, &#x22;4&#x22;], // when you want to control the make process.
-	python: &#x27;path/to/python&#x27;, // for non-standard python setups. Or python 3.x forced ones.
+	input: 'input.js', // where the input file is
+	output: 'path/to/bin', // where to output the compiled binary
+	nodeVersion: '5.5.0', // node version
+	nodeTempDir: 'src', // where to store node source.
+	nodeConfigureArgs: ['opt', 'val'], // for all your configure arg needs.
+	nodeMakeArgs: ["-j", "4"], // when you want to control the make process.
+	python: 'path/to/python', // for non-standard python setups. Or python 3.x forced ones.
 ...</pre></li>
     </ul>
 
@@ -922,23 +915,23 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     <ul>
     <li>description and source-code<pre class="apidocCodePre">function embed(resourceFiles, resourceRoot, options, complete) {
   const encode = function(filePath) {
-    return fs.readFileSync(filePath).toString(&#x27;base64&#x27;);
+    return fs.readFileSync(filePath).toString('base64');
   }
 
   resourceFiles = resourceFiles || [];
-  resourceRoot = resourceRoot || &#x22;&#x22;;
+  resourceRoot = resourceRoot || "";
 
   if (!Array.isArray(resourceFiles)) {
-    throw new Error(&#x22;Bad Argument: resourceFiles is not an array&#x22;);
+    throw new Error("Bad Argument: resourceFiles is not an array");
   }
 
-  let buffer = &#x22;var embeddedFiles = {\n&#x22;;
-  for (let i = 0; i &#x3c; resourceFiles.length; ++i) {
-    buffer += JSON.stringify(path.relative(resourceRoot, resourceFiles[i])) + &#x27;: &#x22;&#x27;;
-    buffer += encode(resourceFiles[i]) + &#x27;&#x22;,\n&#x27;;
+  let buffer = "var embeddedFiles = {\n";
+  for (let i = 0; i &lt; resourceFiles.length; ++i) {
+    buffer += JSON.stringify(path.relative(resourceRoot, resourceFiles[i])) + ': "';
+    buffer += encode(resourceFiles[i]) + '",\n';
   }
 
-  buffer += &#x22;\n};\n\nmodule.exports.keys = function () { return Object.keys(embeddedFiles); }\n\nmodule.exports.get = &#x22;;
+  buffer += "\n};\n\nmodule.exports.keys = function () { return Object.keys(embeddedFiles); }\n\nmodule.exports.get = ";
   buffer += accessor.toString();
   complete(null, buffer);
 }</pre></li>
@@ -964,7 +957,7 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
   async.waterfall([
 
     function read (next) {
-      fs.readFile(filePath, &#x22;utf8&#x22;, next);
+      fs.readFile(filePath, "utf8", next);
     },
 
     // TODO - need to parse gyp file - this is a bit hacker
@@ -972,12 +965,12 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
 
       if (monkeyPatched(content)) return complete();
 
-      _log(&#x22;monkey patch %s&#x22;, filePath);
+      _log("monkey patch %s", filePath);
       processor(content, next);
     },
 
     function write (content, next) {
-      fs.writeFile(filePath, content, &#x22;utf8&#x22;, next);
+      fs.writeFile(filePath, content, "utf8", next);
     }
   ], complete);
 }</pre></li>
@@ -1003,21 +996,21 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
 
   // check if the file exists
   if (fs.existsSync(path) === false) {
-    _log(&#x22;warn&#x22;, &#x22;no package.json found.&#x22;);
+    _log("warn", "no package.json found.");
   } else {
     _package = require(path);
   }
 
   if(!_package || !_package.nexe) {
-    _log(&#x27;error&#x27;, &#x27;trying to use package.json variables, but not setup to do so!&#x27;);
+    _log('error', 'trying to use package.json variables, but not setup to do so!');
     process.exit(1);
   }
 
   // replace ^$ w/ os specific extension on output
   if (isWin) {
-    _package.nexe.output = _package.nexe.output.replace(/\^\$/, &#x27;.exe&#x27;) // exe
+    _package.nexe.output = _package.nexe.output.replace(/\^\$/, '.exe') // exe
   } else {
-    _package.nexe.output = _package.nexe.output.replace(/\^\$/, &#x27;&#x27;) // none
+    _package.nexe.output = _package.nexe.output.replace(/\^\$/, '') // none
   }
 
   // construct the object
@@ -1030,7 +1023,7 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     nodeVersion: (_package.nexe.runtime.version || options.r),
     nodeConfigureArgs: (_package.nexe.runtime.nodeConfigureArgs || []),
     nodeMakeArgs: (_package.nexe.runtime.nodeMakeArgs || []),
-    jsFlags: (_package.nexe.runtime[&#x27;js-flags&#x27;] || options.j),
+    jsFlags: (_package.nexe.runtime['js-flags'] || options.j),
     python: (_package.nexe.python || options.p),
     debug: (_package.nexe.debug || options.d),
     nodeTempDir: (_package.nexe.temp || options.t),
@@ -1046,8 +1039,8 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
 
   // TODO: get rid of this crappy code I wrote and make it less painful to read.
   Object.keys(_package.nexe).forEach(function(v, i) {
-    if (v !== &#x22;runtime&#x22; &#x26;&#x26; v !== &#x27;browserify&#x27;) {
-      _log(&#x22;log&#x22;, v + &#x22; =&#x3e; &#x27;&#x22; + _package.nexe[v] + &#x22;&#x27;&#x22;);
+    if (v !== "runtime" &amp;&amp; v !== 'browserify') {
+      _log("log", v + " =&gt; '" + _package.nexe[v] + "'");
     }
   });
 
@@ -1065,3 +1058,4 @@ nexe.<span class="apidocCodeKeywordSpan">compile</span>({
     ]
 </div>
 </div>
+</body></html>
