@@ -1,4 +1,7 @@
-# api documentation for  [nexe (v1.1.2)](https://github.com/jaredallard/nexe#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-nexe.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-nexe) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-nexe.svg)](https://travis-ci.org/npmdoc/node-npmdoc-nexe)
+# npmdoc-nexe
+
+#### basic api documentation for  [nexe (v1.1.2)](https://github.com/jaredallard/nexe#readme)  [![npm package](https://img.shields.io/npm/v/npmdoc-nexe.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-nexe) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-nexe.svg)](https://travis-ci.org/npmdoc/node-npmdoc-nexe)
+
 #### create single executables out of your [node/io].js applications
 
 [![NPM](https://nodei.co/npm/nexe.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/nexe)
