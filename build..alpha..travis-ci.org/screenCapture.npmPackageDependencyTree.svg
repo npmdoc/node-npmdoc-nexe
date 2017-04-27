@@ -73,7 +73,7 @@
 <tspan x="10" y="1130">  │ ├─┬ parents@1.0.1 </tspan>
 <tspan x="10" y="1146">  │ │ └── path-platform@0.11.15 </tspan>
 <tspan x="10" y="1162">  │ ├── path-browserify@0.0.0 </tspan>
-<tspan x="10" y="1178">  │ ├── process@0.11.9 </tspan>
+<tspan x="10" y="1178">  │ ├── process@0.11.10 </tspan>
 <tspan x="10" y="1194">  │ ├── punycode@1.4.1 </tspan>
 <tspan x="10" y="1210">  │ ├── querystring-es3@0.2.1 </tspan>
 <tspan x="10" y="1226">  │ ├── read-only-stream@2.0.0 </tspan>
@@ -83,7 +83,7 @@
 <tspan x="10" y="1290">  │ │ ├── process-nextick-args@1.0.7 </tspan>
 <tspan x="10" y="1306">  │ │ ├── string_decoder@1.0.0 </tspan>
 <tspan x="10" y="1322">  │ │ └── util-deprecate@1.0.2 </tspan>
-<tspan x="10" y="1338">  │ ├─┬ resolve@1.3.2 </tspan>
+<tspan x="10" y="1338">  │ ├─┬ resolve@1.3.3 </tspan>
 <tspan x="10" y="1354">  │ │ └── path-parse@1.0.5 </tspan>
 <tspan x="10" y="1370">  │ ├─┬ shasum@1.0.2 </tspan>
 <tspan x="10" y="1386">  │ │ ├── json-stable-stringify@0.0.1 </tspan>
@@ -183,7 +183,7 @@
 <tspan x="10" y="2890">  │ │   ├─┬ dashdash@1.14.1 </tspan>
 <tspan x="10" y="2906">  │ │   │ └── assert-plus@1.0.0 </tspan>
 <tspan x="10" y="2922">  │ │   ├── ecc-jsbn@0.1.1 </tspan>
-<tspan x="10" y="2938">  │ │   ├─┬ getpass@0.1.6 </tspan>
+<tspan x="10" y="2938">  │ │   ├─┬ getpass@0.1.7 </tspan>
 <tspan x="10" y="2954">  │ │   │ └── assert-plus@1.0.0 </tspan>
 <tspan x="10" y="2970">  │ │   ├── jodid25519@1.0.2 </tspan>
 <tspan x="10" y="2986">  │ │   ├── jsbn@0.1.1 </tspan>
@@ -230,7 +230,7 @@
 <tspan x="10" y="3642">    │   │ ├── pify@2.3.0 </tspan>
 <tspan x="10" y="3658">    │   │ └─┬ strip-bom@2.0.0 </tspan>
 <tspan x="10" y="3674">    │   │   └── is-utf8@0.2.1 </tspan>
-<tspan x="10" y="3690">    │   ├─┬ normalize-package-data@2.3.6 </tspan>
+<tspan x="10" y="3690">    │   ├─┬ normalize-package-data@2.3.8 </tspan>
 <tspan x="10" y="3706">    │   │ ├── hosted-git-info@2.4.2 </tspan>
 <tspan x="10" y="3722">    │   │ ├─┬ is-builtin-module@1.0.0 </tspan>
 <tspan x="10" y="3738">    │   │ │ └── builtin-modules@1.1.1 </tspan>
